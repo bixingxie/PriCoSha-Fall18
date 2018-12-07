@@ -198,7 +198,7 @@ def getPage():
         query = '''
                 SELECT item_id, tagtime, email_tagger, email_post, post_time, item_name, status
                 FROM Tag NATURAL JOIN ContentItem
-                WHERE email_tagged = %s AND (status != 'ind-accepted' OR status != 'group-accepted') 
+                WHERE email_tagged = %s AND (status != 'ind-accepted' AND status != 'group-accepted') 
             '''
 
         cursor.execute(query, (person))
