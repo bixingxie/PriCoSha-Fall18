@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="UTF-8">
+</head>
+<html lang="en">
+	<body>
+		<div class="container">
+			<h3>Here are your tag request:</h3>
+			<table class="table">
+				<thead class="thead-light">
+					<th scope="col">item_id</th>
+					<th scope="col">tagtime</th>
+					<th scope="col">email_tagger</th>
+					<th scope="col">email_post</th>
+					<th scope="col">post_time</th>
+					<th scope="col">item_name</th>
+					<th scope="col">action</th>
+				</thead>
+				<tbody>
+				{% for line in tags %}
+					<tr>
+						<th scope="row">{{line.item_id}}</th>
+						<td>{{line.tagtime}}</td>
+						<td>{{line.email_tagger}}</td>
+						<td>{{line.email_post}}</td>
+						<td>{{line.post_time}}</td>
+						<td>{{line.item_name}}</td>
+						<td>
+							<form action="/ManageTag" method="POST">
+							<div class="form-row">
+								<input type="radio" class="form-check-input" id="{{item_id}}rdo-accept" name="status" value="1">
+								<label for="{{item_id}}rdo-accept" class="form-check-label">Accept</label>
+							</div>
+							<div class="form-row">
+								<input type="radio" class="form-check-input" id="{{item_id}}rdo-reject" name="status" value="0">
+								<label for="{{item_id}}rdo-reject" class="form-check-label">Reject</label>
+							</div>
+							<input type = "hidden" name = "email_tagged", value = "{{ person }}"/>
+							<input type = "hidden" name = "email_tagger", value = "{{ line.email_tagger }}"/>
+							<input type = "hidden" name = "item_id", value = "{{ line.item_id }}"/>
+							<input type = "hidden" name = "item_status" value = "{{ line.status }}"/>
+							<button class='tag-submit btn btn-primary' name = "tagResponse">Submit</button>
+							</form>
+						</td>
+
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</body>
+</html>

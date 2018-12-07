@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script>
+    $(document).ready(function() {
+        $("#searchUsr_Delete").click(function() {
+            var f_name=$("#fnameDelete").val();
+            var l_name=$("#lnameDelete").val();
+            var searchFor="Delete";
+            if (f_name == "" && l_name == "") {
+                alert("The name is invalid!");
+            }
+            else if (f_name == "") {
+                alert("First Name cannot be empty!");
+            }
+            else if (l_name == "") {
+                alert("Last Name cannot be empty!");
+            }
+            else {
+                $.ajax({
+                    url: "/searchUsr",
+                    type: 'POST',
+                    data: {
+                        fname:f_name,
+                        lname:l_name,
+                        search_for: searchFor
+                    },
+                    success: function(response) {
+                        $("#searchUsr_DeletePage").html(response);
+                    }
+                })
+            }
+            event.preventDefault();
+        })
+
+ });
+ </script>
+</head>
+<body>
+ <div id="searchUsr_DeletePage" class="container">
+        <h3>Delete a Friend:</h3>
+        <form id="form-search">
+        <div class="form-row">
+            <div class="from-group col-lg-6">
+                <label for="fnameDelete">First Name</label>
+                <input type="text" class="form-control" name="fname" id="fnameDelete" placeholder="First Name" required>
+            </div>
+            <div class="form-group col-lg-6">
+                <label for="lnameDelete">Last Name</label>
+                <input type="text" class="form-control" name="lname" id="lnameDelete" placeholder="Last Name" required>
+            </div>
+        </div>
+        <button id="searchUsr_Delete" class="btn btn-primary">Search</button>
+    </form>
+    {% if message %}
+    <script>
+        alert("{{message}}");
+    </script>
+    {% endif %}
+    </div>
+</body>
+</html>

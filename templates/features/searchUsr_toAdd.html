@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script>
+    $(document).ready(function() {
+        $("#searchUsr_Add").click(function() {
+            var f_name=$("#fnameAdd").val();
+            var l_name=$("#lnameAdd").val();
+            var searchFor="Add";
+            if (f_name == "" && l_name == "") {
+                alert("The name is invalid!");
+            }
+            else if (f_name == "") {
+                alert("First Name cannot be empty!");
+            }
+            else if (l_name == "") {
+                alert("Last Name cannot be empty!");
+            }
+            else {
+                $.ajax({
+                    url: "/searchUsr",
+                    type: 'POST',
+                    data: {
+                        fname:f_name,
+                        lname:l_name,
+                        search_for: searchFor
+                    },
+                    success: function(response) {
+                        $("#searchUsr_AddPage").html(response);
+                    }
+                })
+            }
+            event.preventDefault();
+        })
+ });
+ </script>
+</head>
+<body>
+<div id="div1" value="Add" class="container">
+    <div id="searchUsr_AddPage" class="container">
+        <h3>Add a Friend:</h3>
+        <form id="form-search">
+        <div class="form-row">
+            <div class="from-group col-lg-6">
+                <label for="fnameAdd">First Name</label>
+                <input type="text" class="form-control" name="fname" id="fnameAdd" placeholder="First Name" required>
+            </div>
+            <div class="form-group col-lg-6">
+                <label for="lnameAdd">Last Name</label>
+                <input type="text" class="form-control" name="lname" id="lnameAdd" placeholder="Last Name" required>
+            </div>
+        </div>
+        <button id="searchUsr_Add" class="btn btn-primary">Search</button>
+    </form>
+    {% if message %}
+    <script>
+        alert("{{message}}");
+    </script>
+    {% endif %}
+    </div>
+</div>
+</body>
+</html>

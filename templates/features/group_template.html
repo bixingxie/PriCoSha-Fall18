@@ -1,0 +1,21 @@
+<div id="group-table" class="container border-bottom">
+		<h3>Friend Group:</h3>
+		{% if groups %}
+			<table class="table">
+				<thead class="thead-light">
+					<th scope="row">Group Name</th>
+					<th scope="row">Description</th>
+				</thead>
+				<tbody>
+				<div>
+					{% for group in groups %}
+						<tr>
+							<td>{{group.fg_name}}</th>
+							<td>{{group.description}}</td>
+						</tr>
+					{% endfor %}
+				</div>
+				</tbody>
+			</table>
+		{% endif %}
+</div>

@@ -1,0 +1,97 @@
+<head>
+       <script>
+        $(document).ready(function() {
+            $("#btn-cancel").click(function() {
+                 $.ajax({
+                        url: "/deFriend",
+                        type: 'POST',
+                        data: {
+                            submit_button: $("#btn-cancel").val()
+                        },
+                        success: function(response) {
+                            $("#deleteFriendPage").html(response);
+                        }
+                    })
+                    event.preventDefault();
+            });
+
+            $("#btn-select").click(function() {
+                var select_usr = $("#select-usr").val();
+
+                $.ajax({
+                    url: "/getFG",
+                    type: "POST",
+                    data: {
+                        submit_button: $("#btn-select").val(),
+                        toDelete_usr : select_usr
+                    },
+                    success: function(response) {
+                        if (response['data']) {
+                            $("#listGroup").html(response['data'],
+                                $("#deleteModal").modal('show')
+                            );
+                        }
+                        else if (response['message']) {
+                            alert(response['message']);
+                        }
+                    }
+                })
+                event.preventDefault();
+            });
+
+            $("#btn-delete").click(function() {
+               var select_usr=$("#select-usr").val();
+               var select_group = $("#select-delete-group").val();
+               $.ajax({
+                    url: "/deFriend",
+                    type: "POST",
+                    data: {
+                        submit_button: $("#btn-delete").val(),
+                        fg_name: select_group,
+                        toDelete_email: select_usr
+                    },
+                    success: function(response) {
+                        alert(response['message'],
+                            $("#deleteModal").modal('hide')
+                        );
+                    }
+               });
+            });
+        });
+       </script>
+</head>
+
+<body>
+    <div id="deleteFriendPage" class="container">
+        <h3>Delete a Friend:</h3>
+        <div class="form-row">
+            <div class="form-group col-lg-4">
+                <select id="select-usr" class="custom-select" name = "usr">
+                    {% for usr in candidate_usrs %}
+                        <option value = "{{ usr.email }}">{{ usr.email }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+                <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                         <div class="modal-content">
+                             <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModalLabel">Select your group</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div id = "listGroup"></div>
+                                <button class="btn btn-primary col-lg-4" id="btn-delete" name = "submit_button" value="Delete">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <div class="form-row">
+            <button class="btn btn-primary col-lg-1" id="btn-cancel" name = "submit_button" value="Cancel">Cancel</button>
+            <button class="btn btn-primary col-lg-1" id="btn-select" name = "submit_button" value="Select">Select</button>
+        </div>
+    </div>
+</body>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<script>
+		$(document).ready(function() {
+			var itemId;
+			$(".table-button").click(function() {
+				itemId = $(this).children("input").val();
+			});
+
+			$("#btn-closeModal").click(function() {
+				itemId = null;
+			});
+
+			$(".button-detail").click(function() {
+				itemId = $(this).children("input").val();
+				if (itemId) {
+					$.ajax({
+						url: "/contentDetail",
+						type: "POST",
+						data: {
+							item_id: itemId
+						},
+						success: function(response) {
+							$("#contentDetail").html(response,
+								$("#detailModal").modal('show')
+							);
+						}
+					});
+				}
+			});
+
+			$(".btn-submit").click(function() {
+				if (itemId) {
+					if ($("#tag-single").is(":checked")) {
+						if ($("#tagged-email").val() == "") {
+							alert("User cannot be empty!");
+						}
+						else {
+							$.ajax({
+								url : "/tag",
+								type: "POST",
+								data: {
+									tag_choice: "tag-single",
+									item_id: itemId,
+									taggedEmail: $("#tagged-email").val()
+								},
+								success: function(response) {
+									alert(response['message']);
+								}
+							});
+						}
+					}
+					else if ($("#tag-group").is(":checked")) {
+						var tagged_group = $("#tagged-fg").val()
+
+						console.log(tagged_group);
+						if (tagged_group) {
+							$.ajax({
+								url: "/tag",
+								type: "POST",
+								data: {
+									tag_choice: "tag-group",
+									item_id: itemId,
+									toTag_fg: tagged_group
+								},
+								success: function(response) {
+									alert(response['message']);
+								}
+							});
+						}
+					}
+				}
+				event.preventDefault();
+			});
+
+			$(".button-emoji").click(function(){
+				var semoji = $(this).text();
+				var itemId = $(this).parent().next().val()
+				$.ajax({
+					url:"/rate",
+					type: "POST",
+					data: {
+						submit_button: "Rate",
+						item_id : itemId,
+						emoji: semoji
+					},
+					success: function(response) {
+						alert(response['message']);
+					}
+				});
+			});
+		});
+	</script>
+	<style>
+		.modal-body {
+			height: 250px;
+		};
+	</style>
+</head>
+
+<body>
+	<div class = "container">
+		<h2>Here are the content items that were posted within the last 24 hours:</h2>
+		<table class = "table table-hover">
+			<thead>
+				<th>item_id</th>
+				<th>email_post</th>
+				<th>Post Time</th>
+				<th>file_path</th>
+				<th>item_name</th>
+				<th>Tag</th>
+				<th>Rate</th>
+				<th>Details</th>
+			</thead>
+			<tbody>
+				{% for line in posts %}
+						<td>{{line.item_id}}</td>
+						<td>{{line.email_post}}</td>
+						<td>{{line.post_time}}</td>
+						<td>{{line.file_path}}</td>
+						<td>{{line.item_name}}</td>
+						<td>
+							<button type="submit" class="table-button btn btn-success" data-toggle="modal" data-target="#tagModal">
+								<input type="hidden" value="{{ line.item_id }}">
+								Tag
+							</button>
+						</td>
+
+						<td>
+							<div class="table-button btn-group" role="group">
+								<form>
+									<button id="dropdownMenu" type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										Rate
+									</button>
+									<div class="dropdown-menu" aria-labelledby="dropdownMenu">
+										<button class="btn button-emoji">
+											&#x1F60D
+										</button>
+  										<button class="btn button-emoji">&#x1F602</button>
+  										<button class="btn button-emoji">&#x1F605</button>
+										<button class="btn button-emoji">&#x1F643</button>
+										<button class="btn button-emoji">&#x1F62A</button>
+									</div>
+									<input type="hidden" name="item_id" value="{{ line.item_id }}">
+								</form>
+							</div>
+						</td>
+						<td>
+							<button class="btn btn-info button-detail">
+								<input type="hidden" value="{{ line.item_id }}">
+								Detail
+							</button>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+		<div class="modal fade" id="tagModal" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="tagModalLabel">Tag</h5>
+						<button type="button" id='btn-closeModal'class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="form-check col-md-6">
+							<input type="radio" name="tag-choice" class="form-check-input" id="tag-single" required>
+							<label class="form-check-label" for="tag-single">Tag Single User</label>
+							<div class="reveal-if-active">
+								<form>
+									<div class="form-row">
+										<div class="form-group">
+											<label for="tagged-email">Email:</label>
+											<input type="email" class="form-control require-if-active" data-require-pair="#tag-single" id="tagged-email" name="taggedEmail" placeholder="Tagged Email">
+										</div>
+										<button type="submit" class="btn-submit btn btn-primary" name="submit-button">Submit</button>
+									</div>
+								</form>
+							</div>
+						</div>
+
+						<div class="form-check col-md-6">
+							{% if groups %}
+							<input type="radio" name="tag-choice" class="form-check-input" id="tag-group" required>
+							<label class="form-check-label" for="tag-group">Tag Friend Group</label>
+							<div class="reveal-if-active">
+								<form>
+									<div class="form-group">
+										<label for="tagged-fg">Choose Friend Group</label>
+										<select class="form-control require-if-active" data-require-pair="#tag-group" id="tagged-fg" name="taggedGroups">
+											{% for group in groups %}
+											<option value="{{ group.fg_name }}">{{ group.fg_name }}</option>
+											{% endfor %}
+										</select>
+									</div>
+									<button type="submit" class="btn-submit btn btn-primary" name="submit-button">Submit</button>
+								</form>
+							</div>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="detail">Details</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+
+					<div class="modal-body">
+						<div id="contentDetail">
+
+						</div>
+					</div>
+				</div>
+			</div>
+	</div>
+</body>
+</html>

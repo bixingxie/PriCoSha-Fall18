@@ -1,0 +1,151 @@
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script type= "text/javascript" src = "{{ url_for('static', filename = 'scripts/active2.js') }}"></script>
+	<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/hidden.css') }}">
+	<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/hidden2.css') }}">
+	<script>
+		function check(id) {
+			var target_page = id.slice(1);
+			console.log(target_page);
+			$.ajax({
+				url:'/getPage',
+				type:'post',
+				data: {
+					page: target_page
+				},
+				success: function(response) {
+					$(id).html(response);
+				}
+			});
+		};
+
+		$(document).ready(function(){
+
+		$('.nav-tabs > li > a').click(function(event){
+		event.preventDefault();//stop browser to take action for clicked anchor
+
+		//get displaying tab content jQuery selector
+		var active_tab_selector = $('.nav-tabs > li.active > a').attr('href');
+
+		//find actived navigation and remove 'active' css
+		var actived_nav = $('.nav-tabs > li.active');
+		actived_nav.removeClass('active');
+
+		//add 'active' css into clicked navigation
+		$(this).parents('li').addClass('active');
+
+		//hide displaying tab content
+		$(active_tab_selector).removeClass('active');
+		$(active_tab_selector).addClass('hide');
+
+		//show target tab content
+		var target_tab_selector = $(this).attr('href');
+		$(target_tab_selector).removeClass('hide');
+		$(target_tab_selector).addClass('active');
+	     });
+			$(".tab-content").each(function() {
+					console.log($(this).css('display'));
+					if ($(this).css('display') == 'block') {
+						check('#' + $(this).attr('id'));
+					}
+			});
+
+			$(".tablist").click(function() {
+				check($(this).attr('href'));
+			});
+		});
+
+
+	</script>
+
+	<title>{{fname}} {{lname}}'s Homepage</title>
+</head>
+
+<body>
+
+<div style="color:57068C !important" class="jumbotron" >
+		<div class = "container">
+  			<h1>Welcome {{fname}} {{lname}} </h1>
+			<h2>{{person}}</h2>
+			<h3><a href="/logout">Logout</a></h3>
+		</div>
+</div>
+
+<div class="container">
+  <h3>HomePage</h3>
+  <ul class="nav nav-tabs">
+    <li class = "active">
+		<a class='tablist' id='pc' href="#browseContent" >Public Content</a>
+	</li>
+    <li>
+		<a class = 'tablist' id='pst' href="#post_t" >Post</a>
+	</li>
+    <li>
+		<a class = 'tablist' href="#tag" id="tg">Tag</a>
+	</li>
+    <li>
+		<a class = 'tablist' href="#createGroup" id="cg">Create Group</a>
+	</li>
+	  <li>
+		  <a class="tablist" href="#quitGroup" id="qg">Quit Group</a>
+	  </li>
+	<li>
+		<a class = 'tablist' href="#searchUsr_toAdd" id="af">Add Friend</a>
+	</li>
+	  <li>
+		  <a class = 'tablist' href="#searchUsr_toDelete" id="df">Delete Friend</a>
+	  </li>
+
+  </ul>
+</div>
+
+<div class = "container">
+        <section id="browseContent" class="tab-content active" value="browseContent.html">
+			<div>
+
+			</div>
+		</section>
+		<section id="post_t" class="tab-content hide" value="post.html">
+			<div>
+			</div>
+		</section>
+		<section id="tag" class="tab-content hide" value="tag.html">
+			<div>
+
+			</div>
+        </section>
+        <section id="createGroup" class="tab-content hide" value="createGroup.html">
+			<div>
+
+			</div>
+        </section>
+		<section id="quitGroup" class="tab-content hide" value="quitGroup.html">
+			<div>
+
+			</div>
+		</section>
+        <section id="searchUsr_toAdd" class="tab-content hide" value="searchUsr_toAdd.html">
+			<div>
+				<!--{% include 'features/searchUsr_toAdd.html' %}-->
+			</div>
+        </section>
+		<section id="searchUsr_toDelete" class="tab-content hide" value="searchUsr_toDelete.html">
+			<div>
+				<!--{% include 'features/searchUsr_toDelete.html' %}-->
+			</div>
+		</section>
+
+</div>
+
+</body>
+
+
+</html>

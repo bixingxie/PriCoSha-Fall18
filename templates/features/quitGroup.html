@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        $(document).ready(function(){
+            $("#quit-submit").click(function(){
+                console.log( $("#quit-group").val() );
+                $.ajax({
+                    url: '/quitGroup',
+                    type: 'POST',
+                    data: {
+                        submit_button : 'Quit',
+                        info: $("#quit-group").val()
+                    },
+                    success: function(response) {
+                        alert(response['message']);
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h3>Quit From Group: </h3>
+        <div class="form-row">
+            <div class="form-group col-lg-6">
+                <select id="quit-group" class="custom-select" name="fg_name">
+                    {% for group in groups %}
+                        <option value='{"fg_name":"{{ group.fg_name }}", "owner_email":"{{ group.owner_email }}"}'>{{ group.owner_email }}: {{ group.fg_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button id='quit-submit' class="btn btn-primary">Quit</button>
+        </div>
+    </div>
+</body>
+</html>

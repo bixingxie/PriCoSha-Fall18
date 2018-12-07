@@ -1,0 +1,107 @@
+<head>
+	<script>
+	$(document).ready(function() {
+		$("#submit-content").click(function() {
+			var itemName = $("#item_name").val();
+			var filePath = $("#file_path").val();
+
+			if (itemName == "" && filePath == "") {
+				alert("Invalid input");
+			}
+			else if (itemName == "") {
+				alert("Iten Name cannot be empty");
+			}
+			else if (filePath == "") {
+				alert("File Path cannot be empty");
+			}
+			else {
+				var fg_SharedWith;
+				var isPub;
+				if ( $("#choice-private").is(":checked")) {
+					isPub = "0";
+					fg_SharedWith = $("#which-fg").val();
+				}
+				else if ($("#choice-public").is(":checked")) {
+					isPub = "1";
+				}
+				$.ajax({
+						url:'/post',
+						type:'POST',
+						data: {
+							item_name : itemName,
+							file_path : filePath,
+							is_pub: isPub,
+							fgSharedWith: fg_SharedWith
+						},
+						success: function(response) {
+							$("#contentTablePage").html(response['data'],
+								alert(response['message'])
+							)
+						}
+				});
+				event.preventDefault();
+			}
+		});
+	});
+	</script>
+</head>
+
+<div class = "container">
+	<h3>Post:</h3>
+	<form class = "form-horizontal">
+		<div class = "form-group row">
+			<label class = "col-form-label col-lg-1" for="item_name">Item:</label>
+			<div class = "col-lg-4">
+				<input type = "text" class="form-control" id = "item_name" placeholder="Item Name" name = "item_name" required>
+			</div>
+		</div>
+
+		<div class = "form-group">
+			<label class = "col-form-label col-lg-1" for="file_path">File Path:</label>
+			<div class = "col-lg-4">
+				<input type = "text" class = "form-control" id = "file_path" placeholder = "File Path" name = "file_path" required>
+			</div>
+		</div>
+
+
+		<div class = "form-horizontal">
+			<div class = "form-group">
+				<div class="form-check form-check-inline col-lg-1">
+					<input class="form-check-input"type="radio" name="is_pub" id="choice-public" value = "1" checked>
+					<label class="from-check-label"for="choice-public" >Public</label>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="form-check form-check-inline col-lg-6">
+					{% if groups %}
+						<input class="form-check-input" type="radio" name="is_pub" id="choice-private" value="0">
+						<label class="form-check-label" for="choice-private" >Private</label>
+						<div class = "reveal-if-active">
+							<label for="which-fg">Choose your friend groups:</label>
+							<select class="form-control require-if-active" data-require-pair="#choice-private" id="which-fg" name="fgSharedWith">
+								{% for group in groups %}
+									<option value = "{{group.fg_name}}">{{group.fg_name}}</option>
+								{% endfor %}
+							</select>
+						</div>
+					{% endif %}
+					</br>
+				</div>
+			</div>
+		</div>
+
+		<div class = "form-group">
+			<div class = "control-offset-2 col-2">
+				<button id="submit-content" class = "btn btn-default" value="submit">Submit</button>
+			</div>
+		</div>
+	</form>
+</div>
+
+
+<div id="contentTablePage">
+	{% include "features/contentTable.html" %}
+</div>
+
+</div>

@@ -1,0 +1,8 @@
+<body>
+    <select id="select-delete-group" class="custom-select" name="fg_name">
+        {% for group in groups %}
+        <option value="{{ group.fg_name }}">{{ group.fg_name }}</option>
+        {% endfor %}
+    </select>
+
+</body>

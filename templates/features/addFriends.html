@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html  lang="en">
+<head>
+       <script>
+           $(document).ready(function() {
+    $("#btn-cancel").click(function() {
+         $.ajax({
+                url: "/addFriend",
+                type: 'POST',
+                data: {
+                	submit_button: $("#btn-cancel").val()
+                },
+                success: function(response) {
+                    $("#addFriendPage").html(response);
+                }
+            })
+            event.preventDefault();
+    })
+
+    $("#btn-add").click(function() {
+        var select_group = $("#select-group").val()
+        var select_usr = $("#select-usr").val()
+        $.ajax({
+            url: "/addFriend",
+            type: "POST",
+            data: {
+                submit_button: $("#btn-add").val(),
+                fg_name : select_group,
+                usr: select_usr
+            },
+            success: function(response) {
+                alert(response.message);
+            }
+        })
+        event.preventDefault();
+    })
+});
+       </script>
+</head>
+
+<body>
+<div id="addFriendPage" class="container">
+    <h3>Add a Friend:</h3>
+    <div class="form-row">
+        <div class="form-group col-lg-6">
+            <select id="select-group" class="custom-select" name="fg_name">
+                {% for group in groups %}
+                    <option value = "{{ group.fg_name }}">{{group.fg_name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group col-lg-6">
+            <select id="select-usr" class="custom-select" name = "usr">
+                {% for usr in candidate_usrs %}
+                    <option value = "{{ usr.email }}">{{ usr.email }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <button class="btn btn-primary" id="btn-cancel" name = "submit_button" value="Cancel">Cancel</button>
+    <button class="btn btn-primary" id="btn-add" name = "submit_button" value="Add">Add</button>
+    </div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<div>
+    <h2>Rate: </h2>
+    {% if rate_info %}
+        <ul>
+        {% for rate in rate_info %}
+            <li>
+                <span class="text-primary"> {{ rate.email }}</span> rated <span class="text-primary">{{ rate.emoji }}</span> at <span class="text-success">{{ rate.rate_time }}</span>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <h3>No one rates this content!</h3>
+    {% endif %}
+    <hr>
+
+    <h2>Tagged Usr:</h2>
+    {% if tag_info %}
+        <ul>
+        {% for tag in tag_info %}
+            <li>
+                {% if tag[0] == tag[1] %}
+                    <span class="text-primary">{{ tag[0] }}</span> tagged himself at <span class="text-success">{{ tag[2] }}</span>
+                {% else %}
+                    <span class="text-primary">{{ tag[0] }}</span> tagged <span class="text-primary">{{ tag[1] }}</span> at <span class="text-success">{{ tag[2] }}</span>
+                {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <h3>No one tags this content!</h3>
+    {% endif %}
+</div>

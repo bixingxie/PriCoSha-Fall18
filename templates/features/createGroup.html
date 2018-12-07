@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<script>
+	$(document).ready(function() {
+        $("#submit-group-info").click(function() {
+            var group_name = $("#group-name").val();
+            var description_val = $("#description").val();
+            if (group_name == "" && description_val == "") {
+                alert("The name is invalid!");
+            }
+            else if (group_name == "") {
+                alert("Group Name cannot be empty!");
+            }
+            else if (description_val == "") {
+                alert("Description cannot be empty!");
+            }
+            else {
+                $.ajax({
+                    url: "/createGroup",
+                    type: 'POST',
+                    data: {
+                        fg_name : group_name,
+                        description : description_val
+                    },
+                    success: function(response) {
+                     	$("#group-table").html(response['my-group'],
+                     		$("#myJoinedGroup").html(response['joined-group'],
+                     		 alert(response['message'])
+                     		 ));
+                    }
+                })
+            }
+            event.preventDefault();
+        })
+ 	});
+	</script>
+</head>
+
+<body>
+<div id="createGroupPage">
+	<div id="group-table" class="container border-bottom">
+		{% include "features/group_template.html" %}
+	</div>
+
+	<div class="container">
+		<h3>Create Friend Group</h3>
+		<form class="form-horizontal">
+			<div class="form-group row">
+				<label for="group-name" class="col-2">Group Name</label>
+				<div class="col-4">
+					<input type="text" class="form-control" name="fg_name" id="group-name" placeholder="Group Name">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="description" class="col-2">Description</label>
+				<div class="col-4">
+					<input type="text" class="form-control" name="description" id="description" placeholder="description">
+				</div>
+			</div>
+
+			<div class="form-row">
+				<div class="form-group col-lg-2">
+					<button id="submit-group-info" class="btn btn-primary">Create</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div id="myJoinedGroup">
+	{% include "features/joinedGroup_template.html" %}
+</div>
+
+</body>
+</html>
