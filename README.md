@@ -7,7 +7,7 @@ A system for privately sharing content items among groups of people
 3. MySQL (Create a new database named "PriCoSha" and import [ProjTableDefs.sql](/ProjTableDefs.sql))
 
 
-## User Cases 
+## Required User Cases 
 
 - [x] **View public content**: PriCoSha shows the user the item_id, email_post, post_time,
   file_path, and item_name of public content items that were posted within the last 24
@@ -27,7 +27,7 @@ A system for privately sharing content items among groups of people
   a. first name and last name of people who have been tagged in the content item
   (taggees), provided that they have accepted the tags (Tag.status == true)
   b. Ratings of the content item 
-- [ ] **Manage tags**: PriCoSha shows the user relevant data about content items that have
+- [x] **Manage tags**: PriCoSha shows the user relevant data about content items that have
   proposed tags of this user (i.e. user is the taggee and status false.) User can choose to
   accept a tag (change status to true), decline a tag (remove the tag from Tag table), or
   not make a decision (leave the proposed tag in the table with status == false.)
@@ -49,17 +49,34 @@ A system for privately sharing content items among groups of people
   and updates the Belong table to indicate that the selected person is now in the
   FriendGroup. Unusual situation such as multiple people with the same name and the
   selected person already being in the FriendGroup should be handled gracefully
-- [ ] **Include data that is relevant** to the
-  particular kind of content you are sharing (e.g. format data for photos, length and format
-  for videos, location data for location-dependent content, …) and use this data in some
-  interesting way.
-- [ ] **Add comments**: Users can add
-  comments about content that is visible to them. Decide what data about the comments
-  should be stored and displayed and how you want to restrict visibility of comments.
-- [ ] **Defriend**: Think about what should
-  be done when someone is defriended, including some reasonable approach to tags that
-  they posted or saw by virtue of being in the friend group. Write a short summary of how
-  you’re handling this situation. Implement it and test it.
-- [ ] **Tagging a group**: Include an
+
+## Optional User Cases
+
+- [x] **Quit Group**: Users can scroll down groups that they join and select a friend group to quit. If anyone trys to quit a friend group he/she owns, it would fail and an error message would display. 
+- [x] **Add comments**: Users can comment emojis about content that is visible to them. :heart_eyes: Information of who commented the content item and the comment time can be found besides each content item. 
+- [x] **Defriend**: Owners of friends groups are able to defriend other users. Once the defriend is successful, tags of the defriended user won't get display anymore but comments will. 
+- [x] **Tagging a group**: Include an
   additional tagging mechanism, where multiple people in a content item can be tagged
   together, but which will only be visible if all of them agree to make it visible.
+  
+## Team Contribution
+* **Bixing Xie** - (https://github.com/bixingxie)
+  * Initial setup of Flask, mySQL, and github
+  * User case: Register
+  * User case: Login 
+  * User case: Tag a content item (single user) 
+  * User case: Add comments 
+  * User case: Quit group
+* **Chen Zhou** - (https://github.com/ChenZ0912)
+  * User case: View public content
+  * User case: View shared content items and info about them
+  * User case: Post a content item
+  * User case: Add friend
+  * User case: Defriend
+  * User case: Tagging a group
+* **Ninglu Ma** - (https://github.com/bannim)
+  * User case: View public content
+  * User case: View shared content items and info about them
+  * User case: Post a content item
+  * User case: Tag a content item (single user) 
+  * User case: Tagging a group
