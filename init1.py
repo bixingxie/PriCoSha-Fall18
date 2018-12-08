@@ -576,11 +576,8 @@ def tag():
         query='''SELECT COUNT(*) FROM Belong WHERE owner_email = %s AND fg_name = %s'''
         cursor.execute(query, (session['email'], toTag_fg))
         num_of_people_InThisGroup = len(cursor.fetchall())
-        if num_of_people_haveAccessToThisPostInThisGroup < num_of_people_InThisGroup:
-            return jsonify(message="Somebody in {} has no access to this post".format(toTag_fg))
 
-        cursor.execute(query, (session['email'], toTag_fg, item_id))
-        data = cursor.fetchall()
+
 
         query='''
             SELECT *
@@ -590,8 +587,8 @@ def tag():
         cursor.execute(query, item_id)
 
         is_public = cursor.fetchall()
-        if not data and not is_public:
-            return jsonify(message="You didn't share this post with this group!")
+        if num_of_people_haveAccessToThisPostInThisGroup < num_of_people_InThisGroup and not is_public:
+            return jsonify(message="Somebody in {} has no access to this post".format(toTag_fg))
         query = """
                        SELECT email
                        FROM Belong
