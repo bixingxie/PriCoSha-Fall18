@@ -72,7 +72,6 @@ A system for privately sharing content items among groups of people
   * User case: View shared content items and info about them
   * User case: Post a content item
   * User case: Add friend
-  * User case: Defriend
   * User case: Tagging a group
 * **Ninglu Ma** - (https://github.com/bannim)
   * User case: View public content
@@ -80,3 +79,4 @@ A system for privately sharing content items among groups of people
   * User case: Post a content item
   * User case: Tag a content item (single user) 
   * User case: Tagging a group
+  * User case: Defriend
