@@ -21,9 +21,9 @@ app = Flask(__name__)
 
 #Configure MySQL
 conn = pymysql.connect(host='localhost',
-                       port = 3306,
+                       port = 8889,
                        user='root',
-                       password='',
+                       password='root',
                        db='PriCoSha',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
@@ -479,13 +479,13 @@ def tag():
         query = '''
                SELECT item_id
                FROM ContentItem
-               WHERE is_pub = 1
+               WHERE is_pub = 1 AND item_id = %s
                UNION
                SELECT item_id
                FROM Share NATURAL JOIN Belong
                WHERE email = %s AND item_id = %s
                '''
-        cursor.execute(query, (tagged_email, item_id))
+        cursor.execute(query, (item_id, tagged_email, item_id))
         data = cursor.fetchall()
         # edge case: tagged_email doesn't have access to the post
         if not data:
@@ -541,8 +541,6 @@ def tag():
 
         # pick all members in this friend group who have not accepted the tagging request by this user under this post before
         cursor = conn.cursor()
-
-
         query ='''
             SELECT *
             FROM Share
