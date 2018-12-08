@@ -558,10 +558,26 @@ def tag():
         # pick all members in this friend group who have not accepted the tagging request by this user under this post before
         cursor = conn.cursor()
         query ='''
-            SELECT *
-            FROM Share
-            WHERE owner_email = %s AND fg_name = %s AND item_id = %s
+            SELECT COUNT(*)
+            FROM Belong
+            WHERE email IN (
+                                SELECT email
+                                FROM Belong NATURAL JOIN Share
+                                WHERE owner_email= (
+                                                    SELECT email_post
+                                                    FROM ContentItem
+                                                    WHERE item_id = %s
+                                                   )
+                            )
+                    AND owner_email = %s AND fg_name = %s
         '''
+        cursor.execute(query, (item_id, session['email'], toTag_fg))
+        num_of_people_haveAccessToThisPostInThisGroup = len(cursor.fetchall())
+        query='''SELECT COUNT(*) FROM Belong WHERE owner_email = %s AND fg_name = %s'''
+        cursor.execute(query, (session['email'], toTag_fg))
+        num_of_people_InThisGroup = len(cursor.fetchall())
+        if num_of_people_haveAccessToThisPostInThisGroup < num_of_people_InThisGroup:
+            return jsonify(message="Somebody in {} has no access to this post".format(toTag_fg))
 
         cursor.execute(query, (session['email'], toTag_fg, item_id))
         data = cursor.fetchall()
