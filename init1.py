@@ -804,13 +804,13 @@ def contentDetail():
     query_num = '''
         SELECT COUNT(*) AS num
         FROM Belong RIGHT JOIN Tag ON (Tag.email_tagger = Belong.owner_email AND Tag.email_tagged = Belong.email)
-        WHERE fg_name = %s AND email_tagger = %s
+        WHERE fg_name = %s AND email_tagger = %s AND item_id = %s
         '''
     # 这个query找出这个组中所有成员的信息
     query_memeber = '''
         SELECT Tag.email_tagged, Tag.email_tagger, Tag.tagtime
         FROM Belong RIGHT JOIN Tag ON (Tag.email_tagger = Belong.owner_email AND Tag.email_tagged = Belong.email)
-        WHERE Belong.fg_name = %s AND Belong.owner_email = %s
+        WHERE Belong.fg_name = %s AND Belong.owner_email = %s AND item_id = %s
         '''
     # 存放所有要显示的组
     groups_toShow = []
@@ -822,7 +822,7 @@ def contentDetail():
         cursor.execute(query_num_accepted, (item_id, fg_name, email_tagger))
         num_accepted = cursor.fetchone()['num_accepted']
 
-        cursor.execute(query_num, (fg_name, email_tagger))
+        cursor.execute(query_num, (fg_name, email_tagger, item_id))
         num = cursor.fetchone()['num']
         # 如果这个组中所有人都接受，加入到list中
         if num_accepted == num:
@@ -830,7 +830,7 @@ def contentDetail():
 
     # 从要显示的组中找出所有tagger，tagged，tagtime
     for group in groups_toShow:
-        cursor.execute(query_memeber, (group['fg_name'], group['email_tagger']))
+        cursor.execute(query_memeber, (group['fg_name'], group['email_tagger'], item_id))
         for info in cursor.fetchall():
             email_tagger = info['email_tagger']
             email_tagged = info['email_tagged']
