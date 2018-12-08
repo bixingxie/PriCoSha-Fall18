@@ -5,7 +5,6 @@
     <script>
         $(document).ready(function(){
             $("#quit-submit").click(function(){
-                console.log( $("#quit-group").val() );
                 $.ajax({
                     url: '/quitGroup',
                     type: 'POST',
@@ -37,6 +36,9 @@
                     {% endfor %}
                 </select>
             </div>
+
+        </div>
+        <div class="form-row">
             <button id='quit-submit' class="btn btn-primary">Quit</button>
         </div>
         {% else %}
