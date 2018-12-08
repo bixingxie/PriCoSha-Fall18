@@ -134,7 +134,12 @@ def getPage():
     cursor = conn.cursor()
     # PC: Public Content
     person = session['email']
-    if request.form['page'] == 'browseContent':
+    try:
+        page = request.form['page']
+    except:
+        page=request.args['page']
+
+    if page == 'browseContent':
         query = '''SELECT * 
                             FROM ContentItem
                             WHERE (
@@ -160,7 +165,7 @@ def getPage():
         cursor.close()
         return render_template('features/browseContent.html', posts=data, groups=group_data)
 
-    elif request.form['page'] =='post_t':
+    elif page =='post_t':
         query = 'SELECT * FROM ContentItem WHERE email_post = %s ORDER BY post_time DESC'
         cursor.execute(query, (person))
         data = cursor.fetchall()
@@ -175,7 +180,7 @@ def getPage():
         cursor.close()
         return render_template('features/post.html', groups=group_data, posts = data)
 
-    elif request.form['page'] == 'createGroup':
+    elif page == 'createGroup':
         query = """
                     SELECT *
                     FROM Friendgroup
@@ -194,7 +199,7 @@ def getPage():
         cursor.close()
         return render_template('features/createGroup.html', groups=group_data, joined_groups=joined_groups)
 
-    elif request.form['page'] == 'tag':
+    elif page == 'tag':
         query = '''
                 SELECT item_id, tagtime, email_tagger, email_post, post_time, item_name, status
                 FROM Tag NATURAL JOIN ContentItem
@@ -205,7 +210,7 @@ def getPage():
         tags = cursor.fetchall()
         cursor.close()
         return render_template('features/tag.html', tags=tags)
-    elif request.form['page'] == 'quitGroup':
+    elif page == 'quitGroup':
         query = """
                     SELECT *
                     FROM Belong
@@ -216,7 +221,7 @@ def getPage():
         cursor.close()
         return render_template('features/quitGroup.html', groups=group_data)
     else:
-        return render_template('features/' + request.form['page'] + '.html')
+        return render_template('features/' + page + '.html')
 
 @app.route('/post', methods=['GET', 'POST'])
 def post():
@@ -476,6 +481,17 @@ def tag():
             return jsonify(message=
             "Tagging failed, {} is not a valid registered user".format(tagged_email))
 
+        query ='''
+        SELECT email 
+        FROM Belong
+        WHERE email = %s AND owner_email = %s
+        '''
+        cursor.execute(query, (tagged_email, tagger_email))
+
+        data = cursor.fetchall()
+        if not data:
+            return jsonify(message = "Tagging failed, {} is not in your friend group".format(tagged_email))
+
         query = '''
                SELECT item_id
                FROM ContentItem
@@ -727,9 +743,7 @@ def deleteFriend():
         cursor.execute(query, (toDelete_email, owner_email, fg_name))
         conn.commit()
         cursor.close()
-
-        return jsonify(message=
-        "{} successfully deleted from your friend group {}".format(toDelete_email, fg_name))
+        return jsonify(message="Successfully delete {} from {}".format(toDelete_email, fg_name))
 
 
 @app.route('/contentDetail', methods=['POST', 'GET'])
@@ -838,9 +852,19 @@ def quitGroup():
         """
         cursor = conn.cursor()
         cursor.execute(query, (email, owner_email, fg_name))
+
+        query = """
+                           SELECT *
+                           FROM Belong
+                           WHERE email = %s
+                           """
+        cursor.execute(query, (email))
+        group_data = cursor.fetchall()
+        cursor.close()
+
         conn.commit()
         cursor.close()
-        return jsonify(message = "Successfully quit group {}".format(fg_name))
+        return jsonify(message='Successfully quit from {} : {}'.format(owner_email, fg_name))
 
 
 @app.route('/logout')

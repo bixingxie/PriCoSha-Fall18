@@ -14,7 +14,11 @@
                         info: $("#quit-group").val()
                     },
                     success: function(response) {
-                        alert(response['message']);
+                        if (response['message']) {
+                            alert(response['message'],
+                                check('#quitGroup')
+                            );
+                        }
                     }
                 });
             });
@@ -24,6 +28,7 @@
 <body>
     <div class="container">
         <h3>Quit From Group: </h3>
+        {% if groups %}
         <div class="form-row">
             <div class="form-group col-lg-6">
                 <select id="quit-group" class="custom-select" name="fg_name">
@@ -34,6 +39,9 @@
             </div>
             <button id='quit-submit' class="btn btn-primary">Quit</button>
         </div>
+        {% else %}
+        <h4>You haven't joined any groups</h4>
+        {% endif %}
     </div>
 </body>
 </html>
