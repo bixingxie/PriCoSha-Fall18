@@ -558,7 +558,7 @@ def tag():
         # pick all members in this friend group who have not accepted the tagging request by this user under this post before
         cursor = conn.cursor()
         query ='''
-            SELECT COUNT(*)
+            SELECT *
             FROM Belong
             WHERE email IN (
                                 SELECT email
@@ -572,10 +572,12 @@ def tag():
                     AND owner_email = %s AND fg_name = %s
         '''
         cursor.execute(query, (item_id, session['email'], toTag_fg))
-        num_of_people_haveAccessToThisPostInThisGroup = len(cursor.fetchall())
-        query='''SELECT COUNT(*) FROM Belong WHERE owner_email = %s AND fg_name = %s'''
+        people_haveAccessToThisPostInThisGroup = cursor.fetchall()
+        num_of_people_haveAccessToThisPostInThisGroup = len(people_haveAccessToThisPostInThisGroup)
+        query='''SELECT * FROM Belong WHERE owner_email = %s AND fg_name = %s'''
         cursor.execute(query, (session['email'], toTag_fg))
-        num_of_people_InThisGroup = len(cursor.fetchall())
+        people_InThisGroup = cursor.fetchall()
+        num_of_people_InThisGroup = len(people_InThisGroup)
 
 
 
