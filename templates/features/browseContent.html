@@ -94,9 +94,22 @@
 		});
 	</script>
 	<style>
+		.modal {
+  			overflow-y: hidden;
+
+  			.modal-dialog {
+    			overflow-y: initial;
+  			}
+		}
+
 		.modal-body {
-			height: 100%;
-		};
+  			max-height: ~'calc(100vh - 64px)';
+  			overflow-y: auto;
+
+  			@media (min-width: @mq-desktop-min) {
+    			max-height: ~'calc(100vh - 101px)';
+  			}
+  		}
 	</style>
 </head>
 
@@ -179,6 +192,7 @@
 											<input type="email" class="form-control require-if-active" data-require-pair="#tag-single" id="tagged-email" name="taggedEmail" placeholder="Tagged Email">
 										</div>
 										<button type="submit" class="btn-submit btn btn-primary" name="submit-button">Submit</button>
+										<br>
 									</div>
 								</form>
 							</div>
@@ -199,6 +213,7 @@
 										</select>
 									</div>
 									<button type="submit" class="btn-submit btn btn-primary" name="submit-button">Submit</button>
+									<br>
 								</form>
 							</div>
 							{% endif %}
